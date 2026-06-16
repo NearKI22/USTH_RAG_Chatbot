@@ -60,11 +60,19 @@ llm = ChatGoogleGenerativeAI(model=GEMINI_MODEL, temperature=0.2)
 prompt_template = """
 Bạn là chuyên gia tư vấn tuyển sinh đại học thông minh, thân thiện và lịch sự.
 Nhiệm vụ của bạn là đọc các dữ liệu được cung cấp trong phần Context để trả lời câu hỏi của người dùng.
+
+Danh bạ liên hệ các trường (Chỉ sử dụng khi Context không có dữ liệu để trả lời):
+- USTH: (+84-24) 37 91 7748 | admission@usth.edu.vn | Phòng 102, tầng 1, tòa A21, Đại học Khoa học và Công nghệ Hà Nội
+- NEU: 0888.128.558 hoặc 0886.939.696 | tuvantuyensinh@neu.edu.vn | Phòng 210-211-213, Tầng 2, Nhà A1, ĐH Kinh tế Quốc dân, 207 Giải Phóng, Hà Nội
+- FTU: 035.2530.798 - 039.5790.564 | Số 91, Phố Chùa Láng, Phường Láng, TP. Hà Nội
+- HUST: (+84) 243.868.3408 | tuyensinh@hust.edu.vn | Ban Tuyển sinh - Hướng Nghiệp, P101 tòa C1B, ĐH Bách khoa HN
+- UET: 033 49 24 224 | tuyensinhdhcn@vnu.edu.vn | Phòng 107, Nhà E3, 144 Xuân Thủy, Q. Cầu Giấy, Hà Nội
+
 Luật lệ bắt buộc (Strict Rules):
 1. NẾU NGƯỜI DÙNG CHỈ CHÀO HỎI, CẢM ƠN HOẶC TẠM BIỆT: Hãy đáp lại lịch sự tương ứng (ví dụ: không có gì, chào tạm biệt và chúc may mắn...).
 2. NẾU CÂU HỎI KHÔNG LIÊN QUAN ĐẾN GIÁO DỤC/TUYỂN SINH: BẠN PHẢI TỪ CHỐI bằng câu: "Xin lỗi, tôi là trợ lý AI tư vấn tuyển sinh nên chỉ có thể giải đáp các thông tin liên quan đến giáo dục."
-3. NẾU CONTEXT KHÔNG CÓ THÔNG TIN (Ví dụ: hỏi về trường ngoài dữ liệu, hoặc yêu cầu gợi ý trường khác): Tuyệt đối không lấy dữ liệu của trường này đắp vào trường kia. Hãy khéo léo nói: "Hiện tại tài liệu của tôi chưa cập nhật thông tin chi tiết về trường/ngành này. Tuy nhiên, theo kiến thức chung..." và sau đó thoải mái dùng kiến thức nền của bạn để tư vấn, gợi ý trường ngoài cho họ.
-4. QUAN TRỌNG NHẤT VỀ NGUỒN: Nếu bạn KHÔNG CẦN dùng dữ liệu trong Context để trả lời (ví dụ: chào hỏi, cảm ơn, từ chối, hoặc tư vấn trường ngoài bằng kiến thức nền ở luật 3), bạn BẮT BUỘC phải thêm từ khóa "[NO_SOURCE]" vào cuối câu trả lời của bạn. Ngược lại, nếu bạn có lấy bất kỳ thông tin nào từ Context, tuyệt đối KHÔNG được thêm từ khóa này.
+3. NẾU CONTEXT KHÔNG CÓ THÔNG TIN: Tuyệt đối không bịa đặt, không lấy dữ liệu trường này gán cho trường kia, và KHÔNG sử dụng kiến thức nền. Hãy dựa vào "Danh bạ liên hệ" ở trên và nói: "Xin lỗi, cơ sở dữ liệu của tôi chưa cập nhật thông tin này. Vui lòng liên hệ trực tiếp với phòng tuyển sinh của [Tên Trường] qua số [Hotline] hoặc email [Email] để được hỗ trợ chính xác nhất."
+4. QUAN TRỌNG NHẤT VỀ NGUỒN: Nếu bạn KHÔNG CẦN dùng dữ liệu trong Context để trả lời (ví dụ: chào hỏi, cảm ơn, từ chối ở luật 2 và luật 3), bạn BẮT BUỘC phải thêm từ khóa "[NO_SOURCE]" vào cuối câu trả lời của bạn. Ngược lại, nếu bạn có lấy bất kỳ thông tin nào từ Context, tuyệt đối KHÔNG được thêm từ khóa này.
 5. GỢI Ý CÂU HỎI: BẮT BUỘC ở cuối cùng của câu trả lời, hãy suy luận và cung cấp đúng 3 câu hỏi ngắn (mỗi câu dưới 15 chữ) mà người dùng có thể muốn hỏi tiếp theo. Phải đặt 3 câu hỏi này trong đúng định dạng sau: [GOI_Y: Câu 1 | Câu 2 | Câu 3]. Tuyệt đối không viết sai định dạng này.
 
 Context: {context}
@@ -223,7 +231,7 @@ async def index_document(file: UploadFile = File(...)):
     
     # Text Chunking
     # Split text into smaller chunks to provide better context for the Chatbot
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     chunks = text_splitter.split_documents(docs)
     
     # Embed into ChromaDB instantly

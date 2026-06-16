@@ -1,7 +1,7 @@
 # Configuration File
 # Stores API keys, model parameters, and database paths.
 
-GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"
+GEMINI_API_KEY = "Gemini API key"
 
 # Model used for generating text responses
 GEMINI_MODEL = "gemini-3.5-flash"
