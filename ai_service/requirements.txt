@@ -1,0 +1,28 @@
+# Dùng đề gọi Google Gemini API để chat và tạo embedding
+google-generativeai
+
+# Core framework để xây dựng pipeline LLM
+langchain>=0.3.0,<0.4.0
+#Các module cộng đồng cho LangChain
+langchain-community>=0.3.0,<0.4.0
+# Các module để chia nhỏ tài liệu <=> chunk
+langchain-text-splitters
+
+# Connector kết nối LangChain với Google Gemini
+langchain-google-genai>=2.0,<3.0
+
+# ChromaDB - Vector Database (lưu và tìm kiếm embedding)
+chromadb
+
+# Đọc file PDF và trích xuất được nội dung
+pypdf
+
+# LangChain kết nối với ChromaDB
+langchain-chroma
+
+# FastAPI web framework
+fastapi
+# Uvicorn (ASGI server chạy FastAPI)
+uvicorn
+# Dùng để xử lý form-data (nếu tải file PDF qua API)
+python-multipart

@@ -1,0 +1,38 @@
+/* Tùy chỉnh nhẹ một số thứ cơ bản, còn lại dùng Bootstrap */
+body {
+  background-color: #f8f9fa; /* Màu xám nhạt của Bootstrap (bg-light) */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Tùy chỉnh thanh cuộn cho khu vực chat */
+.chat-scroll-area::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-scroll-area::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+.chat-scroll-area::-webkit-scrollbar-thumb {
+  background: #c1c1c1; 
+  border-radius: 4px;
+}
+.chat-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8; 
+}
+
+/* Hiệu ứng loading dấu chấm */
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  background-color: #6c757d;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0 2px;
+  animation: pulse 1.4s infinite ease-in-out both;
+}
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes pulse {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}

@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+chroma_db/
+
+# Node
+node_modules/
+dist/
+
+# Java
+target/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Sensitive/Thesis Files
+THESIS_REPORT_EN.md
+THESIS_REPORT_VN.md
+Giải_Thích_Vite.md
+Admin_Architecture.drawio
+final.sql
