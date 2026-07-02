@@ -14,10 +14,43 @@
 * **OCR tích hợp:** Hệ thống tự động nhận diện và trích xuất chữ từ các file PDF dạng quét (scan) thông qua Gemini OCR.
 
 ### 🏗️ Kiến trúc hệ thống
-Hệ thống được chia thành 3 module (Microservices):
+Hệ thống được thiết kế theo **kiến trúc phân tán 3 tầng (Three-tier Architecture)**:
 1. **Frontend (ReactJS + Vite):** Giao diện người dùng trực quan, hỗ trợ hiển thị Markdown, đánh giá (Like/Dislike) và quản lý lịch sử trò chuyện.
 2. **Backend API Gateway (Java Spring Boot):** Quản lý cơ sở dữ liệu MySQL, lưu trữ lịch sử chat, phản hồi của người dùng và bảo mật JWT.
 3. **AI Service (Python FastAPI):** Nền tảng xử lý ngôn ngữ tự nhiên sử dụng LangChain, ChromaDB và Google Gemini.
+
+### ⚙️ Hướng dẫn cài đặt và chạy hệ thống
+
+**Yêu cầu môi trường:**
+- Node.js (v18+)
+- Python (3.10+)
+- Java (JDK 17+)
+- MySQL (v8.0+)
+
+**Bước 1: Thiết lập cơ sở dữ liệu MySQL**
+- Tạo database tên `rag`.
+- Chỉnh sửa mật khẩu MySQL trong file `java_backend/src/main/resources/application.properties`.
+
+**Bước 2: Cài đặt và chạy AI Service (Python)**
+```bash
+cd ai_service
+pip install -r requirements.txt
+# Cập nhật GEMINI_API_KEY trong app/config.py
+uvicorn app.main:app --reload --port 8000
+```
+
+**Bước 3: Cài đặt và chạy Backend (Java Spring Boot)**
+- Mở thư mục `java_backend` bằng IntelliJ IDEA hoặc Eclipse.
+- Cập nhật dependency bằng Maven và chạy file `JavaBackendApplication.java`.
+- Server sẽ chạy tại cổng `8080`.
+
+**Bước 4: Cài đặt và chạy Frontend (ReactJS)**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+- Giao diện web sẽ tự động mở tại `http://localhost:5173`.
 
 ---
 
@@ -34,7 +67,40 @@ Hệ thống được chia thành 3 module (Microservices):
 * **Integrated OCR:** The system automatically recognizes and extracts text from scanned PDF files via Gemini OCR.
 
 ### 🏗️ System Architecture
-The system is divided into 3 modules (Microservices):
+The system is divided into a **Three-tier Architecture**:
 1. **Frontend (ReactJS + Vite):** Intuitive user interface supporting Markdown rendering, user feedback (Like/Dislike), and chat history management.
 2. **Backend API Gateway (Java Spring Boot):** Manages the MySQL database, stores chat history, user feedback, and handles JWT security.
 3. **AI Service (Python FastAPI):** Natural language processing platform utilizing LangChain, ChromaDB, and Google Gemini.
+
+### ⚙️ Installation and Setup
+
+**Requirements:**
+- Node.js (v18+)
+- Python (3.10+)
+- Java (JDK 17+)
+- MySQL (v8.0+)
+
+**Step 1: Setup MySQL Database**
+- Create a database named `rag`.
+- Edit the MySQL password in `java_backend/src/main/resources/application.properties`.
+
+**Step 2: Setup and Run AI Service (Python)**
+```bash
+cd ai_service
+pip install -r requirements.txt
+# Update GEMINI_API_KEY in app/config.py
+uvicorn app.main:app --reload --port 8000
+```
+
+**Step 3: Setup and Run Backend (Java Spring Boot)**
+- Open the `java_backend` folder in IntelliJ IDEA or Eclipse.
+- Update dependencies using Maven and run `JavaBackendApplication.java`.
+- The server will run on port `8080`.
+
+**Step 4: Setup and Run Frontend (ReactJS)**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+- The web interface will be available at `http://localhost:5173`.

@@ -16,23 +16,23 @@ public class DataSeeder implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Hàm run này sẽ tự động chạy 1 lần duy nhất ngay khi Spring Boot khởi động xong
+    // Runs once automatically right after Spring Boot finishes starting up
     @Override
     public void run(String... args) throws Exception {
-        // Kiểm tra xem trong database đã có tài khoản "admin" chưa
+        // Check whether a default admin account already exists in the database
         if (adminUserRepository.findByUsername("admin").isEmpty()) {
-            
-            // Nếu chưa có, tạo mới 1 tài khoản
+
+            // No admin found — create a default one
             AdminUser defaultAdmin = new AdminUser();
             defaultAdmin.setUsername("admin");
-            // Mật khẩu "123456" sẽ được băm bảo mật bởi BCrypt trước khi lưu vào DB
+            // The plain-text password is hashed by BCrypt before being stored
             defaultAdmin.setPassword(passwordEncoder.encode("123456"));
             defaultAdmin.setRole("ROLE_ADMIN");
 
             adminUserRepository.save(defaultAdmin);
-            System.out.println(">>> [DATA SEEDER] Đã khởi tạo thành công tài khoản Admin mặc định (admin / 123456)");
+            System.out.println(">>> [DATA SEEDER] Default admin account created successfully (admin / 123456)");
         } else {
-            System.out.println(">>> [DATA SEEDER] Tài khoản Admin đã tồn tại. Bỏ qua khởi tạo.");
+            System.out.println(">>> [DATA SEEDER] Admin account already exists. Skipping initialization.");
         }
     }
 }

@@ -13,57 +13,53 @@ public class AiClientService {
     @Autowired
     private RestTemplate restTemplate;
 
-    // URL to FastAPI backend
+    // Base URL of the FastAPI AI service
     private final String FASTAPI_URL = "http://localhost:8000/ask";
 
     /**
-     * Sends the chat request to the Python FastAPI server.
-     * Returns the ChatResponseDTO.
+     * Sends a chat request to the Python FastAPI server and returns the response.
      */
     public ChatResponseDTO getAnswerFromAI(ChatRequestDTO requestDTO) {
         try {
-            // Call Python AI
             ResponseEntity<ChatResponseDTO> response = restTemplate.postForEntity(
                     FASTAPI_URL,
                     requestDTO,
                     ChatResponseDTO.class);
 
-            // Return result (body) to Controller
             return response.getBody();
 
         } catch (Exception e) {
-            // If Python AI is not connect -> error
+            // Python AI service is unreachable — return a fallback error response
             ChatResponseDTO errorResponse = new ChatResponseDTO();
-            errorResponse.setAnswer("Lỗi kết nối tới AI Backend: " + e.getMessage());
+            errorResponse.setAnswer("Unable to reach the AI backend: " + e.getMessage());
             errorResponse.setStatus("error");
             return errorResponse;
         }
     }
 
-    // URL to Python index API (for document upload)
+    // URL for the document indexing endpoint in Python
     private final String FASTAPI_UPLOAD_URL = "http://localhost:8000/index";
 
     /**
-     * Forwards the uploaded file from AdminController to Python.
+     * Forwards the uploaded file from AdminController to the Python AI service.
      */
     public String uploadFileToAI(org.springframework.web.multipart.MultipartFile file) {
         try {
-            // Set header to MULTIPART_FORM_DATA
             org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
             headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
 
-            // Wrap file into MultiValueMap for form-data
+            // Wrap the file resource into a multipart form body
             org.springframework.util.MultiValueMap<String, Object> body = new org.springframework.util.LinkedMultiValueMap<>();
             body.add("file", file.getResource());
 
-            org.springframework.http.HttpEntity<org.springframework.util.MultiValueMap<String, Object>> requestEntity = new org.springframework.http.HttpEntity<>(body, headers);
+            org.springframework.http.HttpEntity<org.springframework.util.MultiValueMap<String, Object>> requestEntity =
+                    new org.springframework.http.HttpEntity<>(body, headers);
 
-            // Send HTTP POST request to Python
             ResponseEntity<String> response = restTemplate.postForEntity(FASTAPI_UPLOAD_URL, requestEntity, String.class);
 
-            return "Upload thành công sang Python AI. Kết quả: " + response.getBody();
+            return "File forwarded to Python AI successfully. Response: " + response.getBody();
         } catch (Exception e) {
-            return "Lỗi khi upload sang Python AI: " + e.getMessage();
+            return "Failed to forward file to Python AI: " + e.getMessage();
         }
     }
 }

@@ -1,4 +1,4 @@
-# Python
+# ─── Python ───────────────────────────────────────────────
 __pycache__/
 *.py[cod]
 *$py.class
@@ -6,24 +6,42 @@ __pycache__/
 venv/
 ENV/
 env/
-chroma_db/
 
-# Node
+# ─── AI Service — generated outputs & large data ──────────
+ai_service/chroma_db/
+ai_service/data/
+ai_service/eval_results.txt
+ai_service/ablation_results.txt
+
+# ─── Node / Frontend ──────────────────────────────────────
 node_modules/
 dist/
 
-# Java
+# ─── Java ─────────────────────────────────────────────────
 target/
+*.class
 
-# IDE / OS
+# ─── IDE / OS ─────────────────────────────────────────────
 .idea/
 .vscode/
 .DS_Store
 *.swp
+Thumbs.db
 
-# Sensitive/Thesis Files
+# ─── Thesis & draft documents (not for public repo) ───────
 THESIS_REPORT_EN.md
 THESIS_REPORT_VN.md
+document - Copy.md
 Giải_Thích_Vite.md
 Admin_Architecture.drawio
 final.sql
+docu
+template_text.txt
+*.docx
+*.pdf
+
+# ─── Miscellaneous assets not needed in repo ──────────────
+asset/
+# --- Thesis Report Ignore -----------------------------------
+Report/
+
