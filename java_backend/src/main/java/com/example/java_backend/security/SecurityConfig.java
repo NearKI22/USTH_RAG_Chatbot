@@ -40,7 +40,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // Disable CSRF for JWT usage
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session management
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/chat", "/api/chat/history").permitAll() // Public endpoints for chat
+                .requestMatchers("/api/chat", "/api/chat/history", "/api/chat/feedback").permitAll() // Public endpoints for chat
                 .requestMatchers("/api/admin/login").permitAll() // Public login endpoint
                 .requestMatchers("/api/admin/**").authenticated() // Secure admin endpoints
                 .anyRequest().authenticated()

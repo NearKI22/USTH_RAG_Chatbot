@@ -1,5 +1,4 @@
 import os
-import shutil
 import warnings
 from fastapi import FastAPI, UploadFile, File  # Handle file uploads from Spring Boot
 from fastapi.staticfiles import StaticFiles
@@ -33,16 +32,16 @@ def get_docx_text(path):
     """
     Extracts text from docx without needing python-docx library
     """
-    WORD_NAMESPACE = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
-    PARA = WORD_NAMESPACE + 'p'
-    TEXT = WORD_NAMESPACE + 't'
+    word_namespace = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
+    para = word_namespace + 'p'
+    text = word_namespace + 't'
     
     with zipfile.ZipFile(path) as docx:
         tree = ET.parse(docx.open('word/document.xml'))
         root = tree.getroot()
         paragraphs = []
-        for paragraph in root.iter(PARA):
-            texts = [node.text for node in paragraph.iter(TEXT) if node.text]
+        for paragraph in root.iter(para):
+            texts = [node.text for node in paragraph.iter(text) if node.text]
             if texts:
                 paragraphs.append(''.join(texts))
         return '\n\n'.join(paragraphs)
@@ -119,7 +118,7 @@ class ChatResponse(BaseModel):
 # Endpoint for handling chat questions (POST /ask)
 
 @app.post("/ask", response_model=ChatResponse)
-async def ask_question(request: ChatRequest):
+def ask_question(request: ChatRequest):
     """
     Receives questions from the Java backend, runs the LangChain RAG pipeline
     to search for vectors in ChromaDB, and calls Gemini for the answer.

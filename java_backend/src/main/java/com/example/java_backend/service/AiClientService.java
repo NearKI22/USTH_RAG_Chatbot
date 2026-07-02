@@ -50,7 +50,13 @@ public class AiClientService {
 
             // Wrap the file resource into a multipart form body
             org.springframework.util.MultiValueMap<String, Object> body = new org.springframework.util.LinkedMultiValueMap<>();
-            body.add("file", file.getResource());
+            org.springframework.core.io.ByteArrayResource fileAsResource = new org.springframework.core.io.ByteArrayResource(file.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return file.getOriginalFilename();
+                }
+            };
+            body.add("file", fileAsResource);
 
             org.springframework.http.HttpEntity<org.springframework.util.MultiValueMap<String, Object>> requestEntity =
                     new org.springframework.http.HttpEntity<>(body, headers);

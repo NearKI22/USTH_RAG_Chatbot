@@ -26,3 +26,4 @@ fastapi
 uvicorn
 # Dùng để xử lý form-data (nếu tải file PDF qua API)
 python-multipart
+pydantic

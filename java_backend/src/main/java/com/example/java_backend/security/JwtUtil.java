@@ -21,12 +21,12 @@ public class JwtUtil {
 
     // Extract username from token
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractClaim(token, claims -> claims.getSubject());
     }
 
     // Extract expiration date from token
     public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+        return extractClaim(token, claims -> claims.getExpiration());
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
