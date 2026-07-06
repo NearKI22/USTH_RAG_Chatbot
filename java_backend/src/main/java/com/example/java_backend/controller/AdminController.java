@@ -35,6 +35,21 @@ public class AdminController {
      */
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+        // Basic file validation
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("File is empty!");
+        }
+        if (file.getSize() > 50 * 1024 * 1024) {
+            return ResponseEntity.badRequest().body("File size exceeds 50MB!");
+        }
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null || 
+            (!originalFilename.toLowerCase().endsWith(".pdf") && 
+             !originalFilename.toLowerCase().endsWith(".docx") && 
+             !originalFilename.toLowerCase().endsWith(".txt"))) {
+            return ResponseEntity.badRequest().body("Unsupported file format!");
+        }
+
         // Extract admin info from JWT
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String adminUsername = "unknown";

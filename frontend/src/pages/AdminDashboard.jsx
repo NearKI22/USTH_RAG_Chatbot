@@ -55,6 +55,13 @@ const AdminDashboard = () => {
         setFile(null);
         return;
       }
+      // Check file size limit (50MB)
+      if (selectedFile.size > 50 * 1024 * 1024) {
+        setStatus('error');
+        setMessage('Dung lượng file vượt quá giới hạn 50MB!');
+        setFile(null);
+        return;
+      }
       setFile(selectedFile);
       setStatus('idle');
       setMessage('');
@@ -74,7 +81,8 @@ const AdminDashboard = () => {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
-        }
+        },
+        timeout: 180000 // 3 minutes for OCR processing
       });
 
       setStatus('success');
@@ -196,7 +204,7 @@ const AdminDashboard = () => {
                         <div>
                           <i className="bi bi-cloud-arrow-up text-primary display-4"></i>
                           <h5 className="mt-3">Click để chọn tài liệu</h5>
-                          <p className="text-muted mb-0">Hỗ trợ: PDF, DOCX, TXT (Tối đa 10MB)</p>
+                          <p className="text-muted mb-0">Hỗ trợ: PDF, DOCX, TXT (Tối đa 50MB)</p>
                         </div>
                       )}
                     </div>
