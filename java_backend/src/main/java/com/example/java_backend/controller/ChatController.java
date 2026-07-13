@@ -49,7 +49,11 @@ public class ChatController {
         
         // Save chat history to database
         try {
-            ChatHistory history = new ChatHistory(userIdentifier, requestDTO.getQuery(), response.getAnswer());
+            // Use originalQuestion (clean, short) for storing; fall back to query if not provided
+            String questionToStore = (requestDTO.getOriginalQuestion() != null && !requestDTO.getOriginalQuestion().isBlank())
+                    ? requestDTO.getOriginalQuestion()
+                    : requestDTO.getQuery();
+            ChatHistory history = new ChatHistory(userIdentifier, questionToStore, response.getAnswer());
             history = chatHistoryRepository.save(history);
             System.out.println(">>> Saved chat history to Database");
             

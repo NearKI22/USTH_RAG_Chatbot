@@ -294,8 +294,16 @@ const AdminDashboard = () => {
                             <tr key={chat.id}>
                               <td className="text-muted" style={{fontSize: '0.85rem'}}>{formatDate(chat.chatTime)}</td>
                               <td><Badge bg="info" className="text-truncate" style={{maxWidth: '100px'}}>{chat.userIdentifier}</Badge></td>
-                              <td className="fw-bold">{chat.question}</td>
-                              <td style={{fontSize: '0.9rem', whiteSpace: 'pre-wrap', maxHeight: '100px', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical'}}>{chat.answer}</td>
+                              <td className="fw-bold">
+                                <div style={{ maxHeight: '150px', overflowY: 'auto', whiteSpace: 'pre-wrap', paddingRight: '5px' }}>
+                                  {chat.question}
+                                </div>
+                              </td>
+                              <td>
+                                <div style={{ fontSize: '0.9rem', whiteSpace: 'pre-wrap', maxHeight: '150px', overflowY: 'auto', paddingRight: '5px' }}>
+                                  {chat.answer}
+                                </div>
+                              </td>
                               <td className="text-center">
                                 {chat.isLiked === true && <Badge bg="success"><i className="bi bi-hand-thumbs-up-fill me-1"></i>Thích</Badge>}
                                 {chat.isLiked === false && <Badge bg="danger"><i className="bi bi-hand-thumbs-down-fill me-1"></i>Không thích</Badge>}

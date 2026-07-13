@@ -99,6 +99,7 @@ const ChatPage = () => {
     try {
       const response = await axios.post('http://localhost:8080/api/chat', {
         query: contextQuery,
+        originalQuestion: userMessage,
         sessionId: sessionId
       });
       
