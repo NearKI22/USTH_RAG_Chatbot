@@ -39,6 +39,13 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
+> **Lưu ý về dữ liệu:** Folder `ai_service/data/` chứa 27 file `.txt` là dữ liệu tuyển sinh đã được chuẩn hóa. Trước lần chạy đầu tiên, cần nạp dữ liệu vào ChromaDB:
+> ```bash
+> cd ai_service
+> python ingest_clean_data.py
+> ```
+> Script này sẽ đọc toàn bộ file `.txt` trong `data/`, chia nhỏ thành chunks và tạo vector embeddings lưu vào `chroma_db/`.
+
 **Bước 3: Cài đặt và chạy Backend (Java Spring Boot)**
 - Mở thư mục `java_backend` bằng IntelliJ IDEA hoặc Eclipse.
 - Cập nhật dependency bằng Maven và chạy file `JavaBackendApplication.java`.
@@ -91,6 +98,13 @@ pip install -r requirements.txt
 # Update GEMINI_API_KEY in app/config.py
 uvicorn app.main:app --reload --port 8000
 ```
+
+> **Note on data:** The `ai_service/data/` folder contains 27 pre-processed `.txt` files with university admission information. Before the first run, load the data into ChromaDB:
+> ```bash
+> cd ai_service
+> python ingest_clean_data.py
+> ```
+> This script reads all `.txt` files from `data/`, splits them into chunks, and stores vector embeddings in `chroma_db/`.
 
 **Step 3: Setup and Run Backend (Java Spring Boot)**
 - Open the `java_backend` folder in IntelliJ IDEA or Eclipse.

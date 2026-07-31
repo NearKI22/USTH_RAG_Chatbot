@@ -4,8 +4,7 @@
 GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"
 
 # Model used for generating text responses
-GEMINI_MODEL = "gemini-3.5-flash"
-
+GEMINI_MODEL = "gemini-3.1-flash-lite"
 # Model used for generating text embeddings (text -> vector)
 GEMINI_EMBEDDING_MODEL = "models/gemini-embedding-001"
 

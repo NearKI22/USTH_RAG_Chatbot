@@ -18,15 +18,12 @@ import warnings
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-# =========================================================
 # CONFIG
-# =========================================================
 # Number of chunks to retrieve per query — should match main.py
 K = 6
 
 CHROMA_DB_PATH = "./chroma_db"
 
-# =========================================================
 # TEST CASES (20 valid queries from Appendix C)
 #
 # Each case has:
@@ -34,7 +31,6 @@ CHROMA_DB_PATH = "./chroma_db"
 #   "keywords" : expected keywords that should appear in at
 #                least one of the retrieved chunks
 #                (a chunk is relevant if it contains ANY keyword)
-# =========================================================
 TEST_CASES = [
     # ---- USTH ----
     {
@@ -125,9 +121,9 @@ TEST_CASES = [
 ]
 
 
-# =========================================================
+
 # METRIC FUNCTIONS
-# =========================================================
+
 
 def is_relevant(chunk_content: str, keywords: list) -> bool:
     """
@@ -177,9 +173,9 @@ def compute_ndcg_at_k(relevant_flags: list) -> float:
     return dcg / idcg if idcg > 0 else 0.0
 
 
-# =========================================================
+
 # MAIN EVALUATION FUNCTION
-# =========================================================
+
 
 def run_evaluation():
     print("=" * 60)
@@ -308,8 +304,6 @@ def run_evaluation():
     }
 
 
-# =========================================================
 # ENTRYPOINT
-# =========================================================
 if __name__ == "__main__":
     results = run_evaluation()

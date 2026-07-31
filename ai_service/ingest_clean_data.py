@@ -28,7 +28,7 @@ for folder in [CHROMA_DB_PATH, CHROMA_LANGCHAIN_DB_PATH, DATA_FOLDER]:
 
 import time
 
-# Find all markdown files in extracted_markdown
+
 extracted_md_dir = os.path.join(DATA_TUYENSINH_DIR, "extracted_markdown")
 files_to_process = []
 
@@ -44,16 +44,18 @@ print(f"[*] Found {len(files_to_process)} Markdown files. Starting data ingestio
 all_docs = []
 for file_path in files_to_process:
     filename = os.path.basename(file_path)
-    dest_path = os.path.join(DATA_FOLDER, filename)
+    # Rename .md -> .txt so source citations show .txt in the chatbot
+    txt_filename = os.path.splitext(filename)[0] + '.txt'
+    dest_path = os.path.join(DATA_FOLDER, txt_filename)
     shutil.copy2(file_path, dest_path)
-    
-    print(f"  -> Reading: {filename}")
+
+    print(f"  -> Reading: {txt_filename}")
     try:
         loader = TextLoader(dest_path, encoding='utf-8')
         docs = loader.load()
         all_docs.extend(docs)
     except Exception as e:
-        print(f"  [!] Error reading file {filename}: {e}")
+        print(f"  [!] Error reading file {txt_filename}: {e}")
 
 print(f"[*] Total documents loaded: {len(all_docs)}")
 

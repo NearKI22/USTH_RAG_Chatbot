@@ -2,7 +2,7 @@ import os
 import warnings
 from fastapi import FastAPI, UploadFile, File  # Handle file uploads from Spring Boot
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel                 # Define JSON data format
+from pydantic import BaseModel  # Define JSON data format
 
 # Turn off FutureWarning of SDK
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -26,6 +26,7 @@ from langchain_core.documents import Document
 os.environ["GOOGLE_API_KEY"] = GEMINI_API_KEY
 genai.configure(api_key=GEMINI_API_KEY)
 
+
 # Function to extract text from DOCX files
 # Using built-in zipfile and xml.etree instead of external dependencies
 def get_docx_text(path):
@@ -35,7 +36,7 @@ def get_docx_text(path):
     word_namespace = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
     para = word_namespace + 'p'
     text = word_namespace + 't'
-    
+
     with zipfile.ZipFile(path) as docx:
         tree = ET.parse(docx.open('word/document.xml'))
         root = tree.getroot()
@@ -46,13 +47,16 @@ def get_docx_text(path):
                 paragraphs.append(''.join(texts))
         return '\n\n'.join(paragraphs)
 
+
 # Initialize LangChain RAG Pipeline
 embeddings_model = GoogleGenerativeAIEmbeddings(model=GEMINI_EMBEDDING_MODEL)
 # Store Vector DB on disk
 db = Chroma(persist_directory=CHROMA_DB_PATH, embedding_function=embeddings_model)
 
-
-llm = ChatGoogleGenerativeAI(model=GEMINI_MODEL, temperature=0.2)
+llm = ChatGoogleGenerativeAI(
+    model=GEMINI_MODEL,
+    temperature=0.2
+    )
 
 # Strict Context Guardrails
 # Use PromptTemplate to lock context, prevent hallucination, and block out-of-scope queries
@@ -86,7 +90,7 @@ PROMPT = PromptTemplate(
 
 # Integrate the prompt and enable source documents return
 qa_chain = RetrievalQA.from_chain_type(
-    llm=llm, 
+    llm=llm,
     chain_type="stuff",
     retriever=db.as_retriever(search_kwargs={"k": 6}),
     return_source_documents=True,
@@ -104,12 +108,14 @@ app = FastAPI(
 # Serve static document files so users can click source links
 app.mount("/documents", StaticFiles(directory=DATA_FOLDER), name="documents")
 
+
 # Define data schemas
 # FastAPI uses these schemas to parse JSON payloads from Java
 
 class ChatRequest(BaseModel):
     query: str
-    
+
+
 class ChatResponse(BaseModel):
     answer: str
     status: str = "success"
@@ -123,16 +129,16 @@ def ask_question(request: ChatRequest):
     Receives questions from the Java backend, runs the LangChain RAG pipeline
     to search for vectors in ChromaDB, and calls Gemini for the answer.
     """
-    
+
     cau_hoi = request.query
-    
+
     # Run RAG Pipeline
     print(f"\n[+] Receive Question: {cau_hoi}")
-    
+
     # Call the QA chain to find relevant vectors and generate an answer
     response = qa_chain.invoke(cau_hoi)
     cau_tra_loi = response['result']
-    
+
     # Source Citations logic
     if "[NO_SOURCE]" in cau_tra_loi:
         # If AI marks as not using source (greeting, refusal), remove the flag and do not print the source.
@@ -147,24 +153,25 @@ def ask_question(request: ChatRequest):
                     # Take only the file name, remove the long directory path
                     filename = os.path.basename(doc.metadata['source'])
                     sources.add(filename)
-            
+
             if sources:
                 # Format as markdown links: [filename](http://localhost:8000/documents/filename)
                 source_links = [f"[{src}](http://localhost:8000/documents/{src})" for src in sources]
                 source_text = ", ".join(source_links)
                 # Append the citation line directly to the end of the response to React
                 cau_tra_loi += f"\n\n*(Source: {source_text})*"
-            
+
     print(f" Answer: {cau_tra_loi}")
-    
+
     return ChatResponse(answer=cau_tra_loi)
 
 
 # Endpoint for uploading and indexing new documents (POST /index)
 
 # Security constants
-MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024   # 50 MB hard limit
-ALLOWED_EXTENSIONS  = ('.pdf', '.docx', '.txt')
+MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024  # 50 MB hard limit
+ALLOWED_EXTENSIONS = ('.pdf', '.docx', '.txt')
+
 
 @app.post("/index")
 async def index_document(file: UploadFile = File(...)):
@@ -187,19 +194,19 @@ async def index_document(file: UploadFile = File(...)):
     # --- 1. Sanitize filename (prevent path traversal) ---
     # os.path.basename strips any directory component such as "../../app/config.py"
     original_name = file.filename or "upload"
-    safe_name     = os.path.basename(original_name)
+    safe_name = os.path.basename(original_name)
 
     # --- 2. Read content into memory and enforce size limit ---
     content = await file.read()
     if len(content) > MAX_FILE_SIZE_BYTES:
         return {
-            "status":  "error",
-            "message": f"File vượt quá giới hạn {MAX_FILE_SIZE_BYTES // (1024*1024)} MB."
+            "status": "error",
+            "message": f"File vượt quá giới hạn {MAX_FILE_SIZE_BYTES // (1024 * 1024)} MB."
         }
 
     # --- 3. Save with UUID prefix (prevent silent overwrite) ---
     import uuid
-    unique_name   = f"{uuid.uuid4().hex[:8]}_{safe_name}"
+    unique_name = f"{uuid.uuid4().hex[:8]}_{safe_name}"
 
     if not os.path.exists(DATA_FOLDER):
         os.makedirs(DATA_FOLDER)
@@ -235,7 +242,8 @@ async def index_document(file: UploadFile = File(...)):
                 uploaded_file = genai.upload_file(path=file_location, mime_type="application/pdf")
                 model = genai.GenerativeModel(GEMINI_MODEL)
                 response = model.generate_content(
-                    [uploaded_file, "Hãy đọc toàn bộ văn bản trong tài liệu PDF này và trả về dưới dạng Text. Chỉ trả về nội dung văn bản, không thêm bình luận nào khác."]
+                    [uploaded_file,
+                     "Hãy đọc toàn bộ văn bản trong tài liệu PDF này và trả về dưới dạng Text. Chỉ trả về nội dung văn bản, không thêm bình luận nào khác."]
                 )
 
                 # Create a Langchain Document object with the OCR output
@@ -278,5 +286,5 @@ async def index_document(file: UploadFile = File(...)):
     }
 
 # uvicorn app.main:app
-#uvicorn app.main:app --reload --port 8000
+# uvicorn app.main:app --reload --port 8000
 # http://127.0.0.1:8000/docs

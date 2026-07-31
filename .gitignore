@@ -9,7 +9,7 @@ env/
 
 # ─── AI Service — generated outputs & large data ──────────
 ai_service/chroma_db/
-ai_service/data/
+ai_service/chroma_langchain_db/
 ai_service/eval_results.txt
 ai_service/ablation_results.txt
 

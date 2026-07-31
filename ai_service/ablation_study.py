@@ -26,9 +26,7 @@ import warnings
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-# =========================================================
 # TEST CASES — same 20 queries used in evaluate_retrieval.py
-# =========================================================
 TEST_CASES = [
     {"query": "Điểm chuẩn ngành Khoa học máy tính USTH năm 2024 là bao nhiêu?",
      "keywords": ["điểm chuẩn", "khoa học máy tính", "usth", "2024"]},
@@ -75,9 +73,7 @@ TEST_CASES = [
 CHROMA_DB_PATH = "./chroma_db"
 
 
-# =========================================================
 # METRIC HELPERS (k is derived dynamically from the doc list)
-# =========================================================
 
 def is_relevant(content: str, keywords: list) -> bool:
     c = content.lower()
@@ -143,9 +139,7 @@ def run_one_config(retriever, config_name, k):
     }
 
 
-# =========================================================
 # MAIN
-# =========================================================
 
 def main():
     print("=" * 65)
@@ -172,10 +166,8 @@ def main():
 
     results = []
 
-    # =====================================================
     # EXPERIMENT A: Compare k = 3, 4, 6, 8
     # Strategy: Similarity Search (cosine distance, default)
-    # =====================================================
     print("\n" + "─" * 65)
     print("  EXPERIMENT A — Effect of retrieved chunk count (k)")
     print("  Strategy: Similarity Search (cosine)")
@@ -194,12 +186,10 @@ def main():
             print(f"\n    [Sleeping 5 s before next config...]")
             time.sleep(5)
 
-    # =====================================================
     # EXPERIMENT B: MMR vs Similarity Search at k=6
     # MMR (Maximal Marginal Relevance) trades some accuracy
     # for diversity — selects chunks that are both relevant
     # and different from each other.
-    # =====================================================
     print("\n" + "─" * 65)
     print("  EXPERIMENT B — Effect of search strategy (k=6)")
     print("  Similarity Search already ran in Experiment A (k=6)")
@@ -219,9 +209,7 @@ def main():
     res_mmr = run_one_config(retriever_mmr, "MMR (λ=0.5), k=6", 6)
     results.append(res_mmr)
 
-    # =====================================================
     # PRINT SUMMARY TABLE
-    # =====================================================
     print("\n\n" + "=" * 65)
     print("   SUMMARY — ABLATION STUDY RESULTS")
     print("=" * 65)
@@ -258,9 +246,7 @@ def main():
 
     print(f"\n{'='*65}")
 
-    # =====================================================
     # SAVE RESULTS TO FILE
-    # =====================================================
     output_path = "ablation_results.txt"
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("ABLATION STUDY — RAG RETRIEVAL CONFIGURATION COMPARISON\n")
